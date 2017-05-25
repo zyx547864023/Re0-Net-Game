@@ -24,6 +24,17 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
     var lastTime = 0;
     var vendors = [ 'ms', 'moz', 'webkit', 'o' ];
 	//requestAnimationFrame不需要使用者指定循环间隔时间，浏览器会基于当前页面是否可见、CPU的负荷情况等来自行决定最佳的帧速率，从而更合理地使用CPU
+	/*如果想要简单的兼容，可以这样子
+	window.requestAnimFrame = (function(){
+	return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            function( callback ){
+              window.setTimeout(callback, 1000 / 60);
+            };
+	})();
+	*/
+	//并不是所有设备的绘制时间间隔是1000/60 ms, 以及上面并木有cancel相关方法，所以，就有下面这份更全面的兼容方法：
     for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++ x ) {
         window.requestAnimationFrame = window[ vendors[ x ] + 'RequestAnimationFrame' ];
         window.cancelAnimationFrame = window[ vendors[ x ] + 'CancelAnimationFrame' ] || window[ vendors[ x ] + 'CancelRequestAnimationFrame' ];
