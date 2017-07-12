@@ -54,7 +54,7 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
     }
 
 }() );
-
+//从这里开始
         //Now the main game class. This gets created on
         //both server and client. Server creates one for
         //each game that is hosted, and client creates one
