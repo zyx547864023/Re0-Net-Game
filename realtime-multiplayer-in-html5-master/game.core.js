@@ -54,7 +54,7 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
     }
 
 }() );
-//从这里开始
+//
         //Now the main game class. This gets created on
         //both server and client. Server creates one for
         //each game that is hosted, and client creates one
@@ -67,12 +67,12 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
             //Store the instance, if any
         this.instance = game_instance;
             //Store a flag if we are the server
-        this.server = this.instance !== undefined;
+        this.server = this.instance !== undefined;//判断自己是不是服务器，如果instance是空，server为false
 
             //Used in collision etc.
         this.world = {
-            width : 720,
-            height : 480
+            width : 720,//这个应该就是地图的宽度
+            height : 480//地图的高度
         };
 
             //We create a player set, passing them
@@ -80,11 +80,11 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
         if(this.server) {
 
             this.players = {
-                self : new game_player(this,this.instance.player_host),
+                self : new game_player(this,this.instance.player_host),//这个应该是player文字说明
                 other : new game_player(this,this.instance.player_client)
             };
 
-           this.players.self.pos = {x:20,y:20};
+           this.players.self.pos = {x:20,y:20};//坐标？
 
         } else {
 
@@ -93,7 +93,7 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
                 other : new game_player(this)
             };
 
-                //Debugging ghosts, to help visualise things
+                //Debugging ghosts, to help visualise things 构造函数的简便写法
             this.ghosts = {
                     //Our ghost position on the server
                 server_pos_self : new game_player(this),
@@ -122,7 +122,7 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
         this.playerspeed = 120;
 
             //Set up some physics integration values
-        this._pdt = 0.0001;                 //The physics update delta time
+        this._pdt = 0.0001;                 //The physics update delta time 变量增量
         this._pdte = new Date().getTime();  //The physics update last delta time
             //A local timer for precision on server and client
         this.local_time = 0.016;            //The local timer
@@ -139,10 +139,10 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
             //Client specific initialisation
         if(!this.server) {
             
-                //Create a keyboard handler
+                //Create a keyboard handler 键盘管理者 就是键盘监听器 
             this.keyboard = new THREEx.KeyboardState();
 
-                //Create the default configuration settings
+                //Create the default configuration settings 默认设置参数 修改全局变量
             this.client_create_configuration();
 
                 //A list of recent server updates we interpolate across
@@ -152,15 +152,18 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
                 //Connect to the socket.io server!
             this.client_connect_to_server();
 
-                //We start pinging the server to determine latency
+                //We start pinging the server to determine latency 我们开始ping服务器确定延迟
             this.client_create_ping_timer();
 
                 //Set their colors from the storage or locally
-            this.color = localStorage.getItem('color') || '#cc8822' ;
+            this.color = localStorage.getItem('color') || '#cc8822' ;//如果是空就用后面的
             localStorage.setItem('color', this.color);
             this.players.self.color = this.color;
 
                 //Make this only if requested
+			//这里检查一下输出的是什么
+			console.log(String(window.location));
+			//貌似有debug模式
             if(String(window.location).indexOf('debug') != -1) {
                 this.client_create_debug_gui();
             }
@@ -174,9 +177,9 @@ if('undefined' != typeof(global)) frame_time = 45; //on server we run at 45ms, 2
 
     }; //game_core.constructor
 
-//server side we set the 'game_core' class to a global type, so that it can use it anywhere.
+//server side we set the 'game_core' class to a global type, so that it can use it anywhere. typeof 可以用来检测给定变量的数据类型
 if( 'undefined' != typeof global ) {
-    module.exports = global.game_core = game_core;
+    module.exports = global.game_core = game_core;//连续等于号连续赋值
 }
 
 /*
@@ -188,7 +191,7 @@ if( 'undefined' != typeof global ) {
 */
 
     // (4.22208334636).fixed(n) will return fixed point value to n places, default n = 3
-Number.prototype.fixed = function(n) { n = n || 3; return parseFloat(this.toFixed(n)); };
+Number.prototype.fixed = function(n) { n = n || 3; return parseFloat(this.toFixed(n)); };//为对象的构造方法添加属性
     //copies a 2d vector like object from one to another
 game_core.prototype.pos = function(a) { return {x:a.x,y:a.y}; };
     //Add a 2d vector with another one and return the resulting vector
